@@ -37,7 +37,7 @@ s3.put <- function (x, path, name, bucket.location = "US", verbose = FALSE,
   saveRDS(x, x.serialized)
 
   s3.cmd <- paste("put", x.serialized, paste0('"', s3key, '"'), ifelse(encrypt,
-      "--encrypt", ""), paste("--bucket-location", bucket.location),
+      "--encrypt", ""), bucket_location_to_flag(bucket.location),
       ifelse(verbose, "--verbose --progress", "--no-progress"), ifelse(debug,
           "--debug", ""), '--check-md5')
 

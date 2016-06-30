@@ -15,7 +15,7 @@ s3.get <- function (path, bucket.location = "US", verbose = FALSE, debug = FALSE
   ## This inappropriately-named function actually checks existence
   ## of a *path*, not a bucket.
   AWS.tools:::check.bucket(path)
-
+  
   # Helper function for fetching data from s3
   fetch <- function() {
     x.serialized <- tempfile()
@@ -28,9 +28,10 @@ s3.get <- function (path, bucket.location = "US", verbose = FALSE, debug = FALSE
     }
 
     ## Run the s3cmd tool to fetch the file from S3.
-    s3.cmd <- paste("get", paste0('"', path, '"'), x.serialized, paste("--bucket-location",
-      bucket.location), ifelse(verbose, "--verbose --progress",
-      "--no-progress"), ifelse(debug, "--debug", ""))
+    s3.cmd <- paste("get", paste0('"', path, '"'), x.serialized,
+                    bucket_location_to_flag(bucket.location),
+                    if (verbose) "--verbose --progress" else "--no-progress",
+                    if (debug) "--debug" else "")
     system2(s3cmd(), s3.cmd)
 
     ## And then read it back in RDS format.
